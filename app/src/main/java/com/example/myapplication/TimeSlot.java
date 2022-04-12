@@ -24,6 +24,7 @@ public class TimeSlot implements Serializable {
     }
 
     public TimeSlot(String recCenter, Date date, int capacity){
+        this.recCenter = recCenter;
         this.date = date;
         this.capacity = capacity;
         currentRegistered = 0;

@@ -42,9 +42,9 @@ public class TimeSlotActivity extends AppCompatActivity {
 
         // add a test user
         currentUser = new User();
-        currentUser.userName = "Thomas";
-        currentUser.USCID = "1234567890";
-        currentUser.Appointments = new ArrayList<>();
+//        currentUser.userName = "Thomas";
+//        currentUser.USCID = "1234567890";
+//        currentUser.Appointments = new ArrayList<>();
         currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         Intent intent = getIntent();

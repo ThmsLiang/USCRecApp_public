@@ -11,12 +11,12 @@ public class RecCenter implements Serializable {
 
     public static Date getCalendar(){
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2022, 7, 1, 9, 0);
+        calendar.set(2022, 7, 1, 9, 0, 0);
         Date result = calendar.getTime();
         return result;
     }
 
-    private static ArrayList<TimeSlot> lyon_timeslot = new ArrayList<>(Arrays.asList(new TimeSlot("lyon", getCalendar(),10 )));
+    private static ArrayList<TimeSlot> lyon_timeslot = new ArrayList<>(Arrays.asList(new TimeSlot("lyon", getCalendar(),1 )));
     static RecCenter lyon = new RecCenter("lyon", 34.024555845264075, -118.28840694512736, lyon_timeslot);
     static RecCenter Cromwell_Track = new RecCenter(
             "Cromwell Track",
