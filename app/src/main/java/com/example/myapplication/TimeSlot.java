@@ -98,14 +98,14 @@ public class TimeSlot implements Serializable {
 
     // other methods
     void addToWaitingList(User user) {
-        waitingList.add(user.getUSCID());
+        waitingList.add(user.getEmail());
     }
 
     void notifyUsersInWaitingList() {
         // TODO
     }
 
-    //pop the first user from waitlist
+    //pop the first user from waiting list
     void removeFromWaitingList() {
         // TODO
         waitingList.remove(0);
