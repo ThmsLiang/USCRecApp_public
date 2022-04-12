@@ -89,6 +89,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("Loading User Debug","no user photo url");
             if (user.getDisplayName() != null) {
                 editTextUSCID.setText(user.getDisplayName());
+                editTextUSCID.setKeyListener(null);
             }
             else {
                 Log.d("Loading User Debug","no USCID");
@@ -109,6 +110,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         else if (view.getId() == R.id.buttonContinue) {
+            if (mAuth.getCurrentUser().getDisplayName() == null) {
+                Toast.makeText(ProfileActivity.this,"A valid USCID and image is necessary to continue",Toast.LENGTH_SHORT).show();
+                return;
+            }
             Intent intent = new Intent(ProfileActivity.this,GMapsActivity.class);
             this.finish();
             startActivity(intent);
