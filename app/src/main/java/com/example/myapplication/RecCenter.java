@@ -11,10 +11,7 @@ public class RecCenter implements Serializable {
 
     public static Date getCalendar(){
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, 2022);
-        calendar.set(Calendar.MONTH, 6);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.AM, 9);
+        calendar.set(2022, 7, 1, 9, 0);
         Date result = calendar.getTime();
         return result;
     }
