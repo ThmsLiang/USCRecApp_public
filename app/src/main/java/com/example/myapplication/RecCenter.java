@@ -9,7 +9,17 @@ public class RecCenter implements Serializable {
     double latitude;
     ArrayList<TimeSlot> timeSlots;
 
-    private static ArrayList<TimeSlot> lyon_timeslot = new ArrayList<>(Arrays.asList(new TimeSlot("lyon", new Date(2022, 6, 1, 9, 0),10 )));
+    public static Date getCalendar(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, 2022);
+        calendar.set(Calendar.MONTH, 6);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        calendar.set(Calendar.AM, 9);
+        Date result = calendar.getTime();
+        return result;
+    }
+
+    private static ArrayList<TimeSlot> lyon_timeslot = new ArrayList<>(Arrays.asList(new TimeSlot("lyon", getCalendar(),10 )));
     static RecCenter lyon = new RecCenter("lyon", 34.024555845264075, -118.28840694512736, lyon_timeslot);
     static RecCenter Cromwell_Track = new RecCenter(
             "Cromwell Track",
@@ -17,7 +27,7 @@ public class RecCenter implements Serializable {
             -118.28756149541665,
             new ArrayList<>(Arrays.asList(
                     new TimeSlot("Cromwell_Track",
-                            new Date(2022, 6, 1, 9, 0),
+                            getCalendar(),
                     10)
             ))
     );
@@ -28,7 +38,7 @@ public class RecCenter implements Serializable {
             -118.28768781318018,
             new ArrayList<>(Arrays.asList(
                     new TimeSlot("UAC Lap Swim",
-                            new Date(2022, 6, 1, 9, 0),
+                            getCalendar(),
                     10)
             ))
     );
