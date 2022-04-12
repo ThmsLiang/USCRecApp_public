@@ -20,18 +20,23 @@ import com.example.myapplication.databinding.ActivityGmapsBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GMapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityGmapsBinding binding;
+    public static final String TAG = "GMaps message: ";
+    public FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,35 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
         LatLng uac = new LatLng(34.024203589076414, -118.2879799201736);
         mMap.addMarker(new MarkerOptions().position(uac).title("UAC Lap Swim")).showInfoWindow();
 
+        /**************fetch reccenter from database******************/
+
+        HashMap<String, RecCenter> all_centers = new HashMap<>();
+
+        // initialize the database if it's uninitialized yet
+        if(Database.db == null) {
+            Database.db = FirebaseFirestore.getInstance();
+        }
+
+        //get firebase instance
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) Log.d(TAG,"Auth instance is null");
+
+        Database.db.collection("RecCenter")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document: task.getResult()){
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                                all_centers.put(document.getId(), document.toObject(RecCenter.class));
+                                Log.d(TAG, document.getId() + " => " + all_centers.get(document.getId()));
+                            }
+                        }
+                    }
+                });
+
+
 
         //set marker onclick event
         GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
@@ -82,10 +116,10 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
                 Intent intent = new Intent(GMapsActivity.this, BookingPageActivity.class);
                 intent.putExtra("RecCenter",
                         marker.getTitle().equals("lyon") ?
-                        RecCenter.lyon :
+                        all_centers.get("Lyon Center") :
                         marker.getTitle().equals("Cromwell Track") ?
-                        RecCenter.Cromwell_Track :
-                        RecCenter.uac);
+                        all_centers.get("Cromwell Track") :
+                        all_centers.get("UAC Lap Swim"));
                 startActivity(intent);
 
                 return false;
