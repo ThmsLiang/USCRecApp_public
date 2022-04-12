@@ -97,4 +97,14 @@ public class RecCenter implements Serializable {
     void deleteAppointment(TimeSlot slot, User user, boolean availability) {
         // TODO
     }
+
+    @Override
+    public String toString() {
+        return "RecCenter{" +
+                "name='" + name + '\'' +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", timeSlots=" + timeSlots +
+                '}';
+    }
 }

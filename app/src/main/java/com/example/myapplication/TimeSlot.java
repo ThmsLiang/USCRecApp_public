@@ -115,6 +115,6 @@ public class TimeSlot implements Serializable {
     public String toString() {
         // TODO
         int remain = capacity - currentRegistered;
-        return date.toString() + " current available spots: "+ (Math.max(remain, 0));
+        return date.toString() + ", current available spots: "+ (Math.max(remain, 0));
     }
 }
