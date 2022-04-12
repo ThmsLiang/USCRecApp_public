@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +26,7 @@ public class TimeSlotActivity extends AppCompatActivity {
     RecCenter currRecCenter;
     TimeSlot currTimeSlot;
     User currentUser;
+    String TAG = "From TimeSlotActivity: ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,13 +121,28 @@ public class TimeSlotActivity extends AppCompatActivity {
                 }
             });
 
-            // update the recCenter's data
-            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
-
             // decrease the number of available spots of the current time slot
-            currTimeSlot.setCurrentRegistered(currTimeSlot.getCurrentRegistered() + 1);
-            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
+            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+            //currTimeSlot.setCurrentRegistered(currTimeSlot.getCurrentRegistered() + 1);
+            TimeSlot newTimeslot = new TimeSlot(currTimeSlot);
+            newTimeslot.setCurrentRegistered(newTimeslot.currentRegistered + 1);
+            recCenterRef.update("timeSlots",FieldValue.arrayUnion(newTimeslot))
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d(TAG, "DocumentSnapshot successfully updated! currentRegisted: " + newTimeslot.currentRegistered);
+                }
+            });
+
+            // update the recCenter's data
+            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot))
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d(TAG, "DocumentSnapshot successfully removed!");
+                }
+            });
+
         });
     }
 

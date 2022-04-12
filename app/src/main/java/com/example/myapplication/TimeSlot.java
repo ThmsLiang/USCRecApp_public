@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,17 @@ public class TimeSlot implements Serializable {
         currentRegistered = 0;
         waitingList = new LinkedList<>();
         slotId = "";
+    }
+
+    public TimeSlot(TimeSlot timeSlot){
+        this.slotId = timeSlot.slotId;
+        this.date = timeSlot.date;
+        this.capacity = timeSlot.capacity;
+        this.currentRegistered = timeSlot.currentRegistered;
+        this.recCenter = timeSlot.recCenter;
+
+        this.waitingList = new ArrayList<>();
+        this.waitingList.addAll(timeSlot.waitingList);
     }
 
     // getters and setters
