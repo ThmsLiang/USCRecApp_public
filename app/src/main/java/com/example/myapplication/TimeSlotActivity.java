@@ -26,6 +26,7 @@ public class TimeSlotActivity extends AppCompatActivity {
     RecCenter currRecCenter;
     TimeSlot currTimeSlot;
     User currentUser;
+    ArrayList<HashMap<String, Object>> appointments;
     String TAG = "From TimeSlotActivity: ";
 
     @Override
@@ -51,6 +52,7 @@ public class TimeSlotActivity extends AppCompatActivity {
         if(intent != null) {
             currTimeSlot = (TimeSlot) intent.getSerializableExtra("TimeSlot");
             currRecCenter = (RecCenter) intent.getSerializableExtra("RecCenter");
+            appointments = (ArrayList<HashMap<String, Object>>) intent.getSerializableExtra("Appointments");
         }
 
         // set the visibility of those two buttons
@@ -66,63 +68,75 @@ public class TimeSlotActivity extends AppCompatActivity {
 
         // set on click activity
         remindMe.setOnClickListener((View view) -> {
-            // update the recCenter's data
-            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
-            currTimeSlot.addToWaitingList(currentUser);
-            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
+            // we disallow a user to have multiple reservations/ reminders from the same rec center
+            if(checkNoDuplicate()) {
+                // update the recCenter's data
+                DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+                recCenterRef.update("timeSlots", FieldValue.arrayRemove(currTimeSlot));
+                currTimeSlot.addToWaitingList(currentUser);
+                recCenterRef.update("timeSlots", FieldValue.arrayUnion(currTimeSlot));
 
-            // add the appointment to the user's record
-            Appointment appointment = new Appointment();
-            appointment.setRecCenterName(currRecCenter.getName());
-            appointment.setTimeInterval(currTimeSlot);
-            appointment.setSuccessfullyBooked(false);
+                // add the appointment to the user's record
+                Appointment appointment = new Appointment();
+                appointment.setRecCenterName(currRecCenter.getName());
+                appointment.setTimeInterval(currTimeSlot);
+                appointment.setSuccessfullyBooked(false);
 
-            DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
-            userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderSucceed, Snackbar.LENGTH_SHORT);
-                    success.show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderFailed, Snackbar.LENGTH_SHORT);
-                    success.show();
-                }
-            });
+                DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
+                userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderSucceed, Snackbar.LENGTH_SHORT);
+                        success.show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderFailed, Snackbar.LENGTH_SHORT);
+                        success.show();
+                    }
+                });
+            } else {
+                Snackbar warning = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.duplicateWarning, Snackbar.LENGTH_SHORT);
+                warning.show();
+            }
         });
 
         // callback function for the reserve button
         reserve.setOnClickListener((View view) -> {
-            // update the recCenter's data
-            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
-            int registerNum = currTimeSlot.getCurrentRegistered();
-            currTimeSlot.setCurrentRegistered(registerNum + 1);
-            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
+            // we disallow a user to have multiple reservations/ reminders from the same rec center
+            if(checkNoDuplicate()) {
+                // update the recCenter's data
+                DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+                recCenterRef.update("timeSlots", FieldValue.arrayRemove(currTimeSlot));
+                int registerNum = currTimeSlot.getCurrentRegistered();
+                currTimeSlot.setCurrentRegistered(registerNum + 1);
+                recCenterRef.update("timeSlots", FieldValue.arrayUnion(currTimeSlot));
 
-            // add the appointment to the user's record
-            Appointment appointment = new Appointment();
-            appointment.setRecCenterName(currRecCenter.getName());
-            appointment.setTimeInterval(currTimeSlot);
-            appointment.setSuccessfullyBooked(true);
+                // add the appointment to the user's record
+                Appointment appointment = new Appointment();
+                appointment.setRecCenterName(currRecCenter.getName());
+                appointment.setTimeInterval(currTimeSlot);
+                appointment.setSuccessfullyBooked(true);
 
-            DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
-            userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentSucceed, Snackbar.LENGTH_SHORT);
-                    success.show();
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentFailed, Snackbar.LENGTH_SHORT);
-                    success.show();
-                }
-            });
+                DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
+                userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentSucceed, Snackbar.LENGTH_SHORT);
+                        success.show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentFailed, Snackbar.LENGTH_SHORT);
+                        success.show();
+                    }
+                });
+            } else {
+                Snackbar warning = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.duplicateWarning, Snackbar.LENGTH_SHORT);
+                warning.show();
+            }
         });
     }
 
@@ -135,5 +149,19 @@ public class TimeSlotActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // check if the user already have a reservation or reminder on that reccenter
+    // if so, disable the button
+    // returns true if there's no duplicates
+    boolean checkNoDuplicate() {
+        if(!appointments.isEmpty()) {
+            for (int i = 0; i < appointments.size(); ++i) {
+                if (appointments.get(i).get("recCenterName").equals(currRecCenter.getName())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -42,9 +42,11 @@ public class BookingPageActivity extends AppCompatActivity {
     String currentLocationName;
     public static RecCenter currentLocation;
     ArrayList<TimeSlot> timeSlots;
+    User currentUser;
     String TAG = "Booking page info";
     public FirebaseAuth mAuth;
     HashMap<String, RecCenter> all_centers;
+    ArrayList<HashMap<String, Object>> all_appointments;
 
     private boolean queryFinished = false;
 
@@ -60,6 +62,10 @@ public class BookingPageActivity extends AppCompatActivity {
         // get the rec center object from the intent
         Intent intent = getIntent();
         currentLocationName = intent.getStringExtra("RecCenter");
+
+        // get the current user
+        currentUser = new User();
+        currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         /**************fetch rec center from database******************/
 
@@ -81,13 +87,27 @@ public class BookingPageActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if(task.isSuccessful()){
                             for (QueryDocumentSnapshot document: task.getResult()){
-                                //Log.d(TAG, document.getId() + " => " + document.getData());
                                 all_centers.put(document.getId(), document.toObject(RecCenter.class));
                                 Log.d(TAG, document.getId() + " => " + all_centers.get(document.getId()));
                             }
-                            generateView();
+                            getAppointments();
                         } else {
-                            Log.d(TAG, "fucked up");
+                            Log.d(TAG, "something went wrong when querying rec centers");
+                        }
+                    }
+                });
+    }
+
+    // get all the appointments of the current user
+    public void getAppointments() {
+        Database.db.collection("User").document(currentUser.getUSCID()).get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            all_appointments = (ArrayList<HashMap<String, Object>>) document.get("Appointments");
+                            generateView();
                         }
                     }
                 });
@@ -147,6 +167,7 @@ public class BookingPageActivity extends AppCompatActivity {
                 Intent intent = new Intent(BookingPageActivity.this, TimeSlotActivity.class);
                 intent.putExtra("TimeSlot", timeSlots.get(i));
                 intent.putExtra("RecCenter", currentLocation);
+                intent.putExtra("Appointments", all_appointments);
                 startActivity(intent);
             }
         });
