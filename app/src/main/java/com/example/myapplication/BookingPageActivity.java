@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -38,9 +39,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class BookingPageActivity extends AppCompatActivity {
+    String currentLocationName;
     public static RecCenter currentLocation;
-    public static final String TAG = "Firebase Message: ";
     ArrayList<TimeSlot> timeSlots;
+    String TAG = "Booking page info";
+    public FirebaseAuth mAuth;
+    HashMap<String, RecCenter> all_centers;
 
     private boolean queryFinished = false;
 
@@ -55,40 +59,42 @@ public class BookingPageActivity extends AppCompatActivity {
 
         // get the rec center object from the intent
         Intent intent = getIntent();
-        currentLocation = (RecCenter)intent.getSerializableExtra("RecCenter");
+        currentLocationName = intent.getStringExtra("RecCenter");
 
-        // a test rec center
-        RecCenter test = new RecCenter();
-        test.name = "Lyon Center";
-        test.latitude = 34.02465;
-        test.longitude = -118.28844;
-        test.timeSlots = new ArrayList<>();
+        /**************fetch rec center from database******************/
 
-        TimeSlot temp1 = new TimeSlot();
-        temp1.date = new GregorianCalendar(2022, Calendar.MARCH, 28).getTime();
-        temp1.capacity = 7;
-        temp1.currentRegistered = 0;
-        temp1.waitingList = new ArrayList<>();
-        temp1.recCenter = "Lyon Center";
-        temp1.slotId = "00001";
+        all_centers = new HashMap<>();
 
-        TimeSlot temp2 = new TimeSlot();
-        temp2.date = new GregorianCalendar(2022, Calendar.MARCH, 29).getTime();
-        temp2.capacity = 10;
-        temp2.currentRegistered = 3;
-        temp2.waitingList = new ArrayList<>();
+        // initialize the database if it's uninitialized yet
+        if(Database.db == null) {
+            Database.db = FirebaseFirestore.getInstance();
+        }
 
-        TimeSlot temp3 = new TimeSlot();
-        temp3.date = new GregorianCalendar(2022, Calendar.MARCH, 28).getTime();
-        temp3.capacity = 2;
-        temp3.currentRegistered = 2;
-        temp3.waitingList = new ArrayList<>();
+        //get firebase instance
+        mAuth = FirebaseAuth.getInstance();
+        if (mAuth == null) Log.d(TAG,"Auth instance is null");
 
-        test.timeSlots.add(temp1);
-        test.timeSlots.add(temp2);
-        test.timeSlots.add(temp3);
+        Database.db.collection("RecCenter")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for (QueryDocumentSnapshot document: task.getResult()){
+                                //Log.d(TAG, document.getId() + " => " + document.getData());
+                                all_centers.put(document.getId(), document.toObject(RecCenter.class));
+                                Log.d(TAG, document.getId() + " => " + all_centers.get(document.getId()));
+                            }
+                            generateView();
+                        } else {
+                            Log.d(TAG, "fucked up");
+                        }
+                    }
+                });
+    }
 
-        // currentLocation = test;
+    public void generateView() {
+        currentLocation = all_centers.get(currentLocationName);
 
         // fetch and store all the data fields inside multiple arrays
         ArrayList<TimeSlot> timeSlots = currentLocation.getTimeSlots();

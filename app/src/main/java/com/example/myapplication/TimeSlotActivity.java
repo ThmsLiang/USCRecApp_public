@@ -42,11 +42,8 @@ public class TimeSlotActivity extends AppCompatActivity {
         // enable tool bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // add a test user
+        // get the current user
         currentUser = new User();
-//        currentUser.userName = "Thomas";
-//        currentUser.USCID = "1234567890";
-//        currentUser.Appointments = new ArrayList<>();
         currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
         currentUser.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
@@ -126,29 +123,6 @@ public class TimeSlotActivity extends AppCompatActivity {
                     success.show();
                 }
             });
-
-//            // decrease the number of available spots of the current time slot
-//            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-//            currTimeSlot.setCurrentRegistered(currTimeSlot.getCurrentRegistered() + 1);
-//            TimeSlot newTimeslot = new TimeSlot(currTimeSlot);
-//            newTimeslot.setCurrentRegistered(newTimeslot.currentRegistered + 1);
-//            recCenterRef.update("timeSlots",FieldValue.arrayUnion(newTimeslot))
-//            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                @Override
-//                public void onSuccess(Void unused) {
-//                    Log.d(TAG, "DocumentSnapshot successfully updated! currentRegisted: " + newTimeslot.currentRegistered);
-//                }
-//            });
-//
-//            // update the recCenter's data
-//            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot))
-//            .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                @Override
-//                public void onSuccess(Void unused) {
-//                    Log.d(TAG, "DocumentSnapshot successfully removed!");
-//                }
-//            });
-
         });
     }
 
