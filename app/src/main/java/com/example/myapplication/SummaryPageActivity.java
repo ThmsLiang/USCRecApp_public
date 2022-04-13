@@ -186,7 +186,7 @@ public class SummaryPageActivity extends AppCompatActivity {
                                     intent.putExtra("Date",dates.get(i));
                                     intent.putExtra("Time",times.get(i));
                                     intent.putExtra("Appointment", (Serializable) apptArray.get(indices.get(i)));
-                                    intent.putExtra("Timestamp",timestamps.get(i).toDate().toString());
+                                    intent.putExtra("Timestamp",timestamps.get(i).toString());
 
                                     SummaryPageActivity.this.finish();
                                     startActivity(intent);
