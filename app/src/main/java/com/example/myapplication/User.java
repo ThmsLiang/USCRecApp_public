@@ -78,6 +78,5 @@ public class User {
 
     // upon appointment removal, notify all other users who are in the waiting list
     void notifyWaitList() {
-        // TODO
     }
 }

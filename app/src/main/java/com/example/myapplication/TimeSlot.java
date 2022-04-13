@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,10 +55,6 @@ public class TimeSlot implements Serializable {
         this.date = date;
     }
 
-//    public boolean isAvailable() {
-//        return currentRegistered < capacity;
-//    }
-
     public Integer getCapacity() {
         return capacity;
     }
@@ -76,14 +74,6 @@ public class TimeSlot implements Serializable {
     public Integer getDuration() {
         return duration;
     }
-
-
-//    public void register(User user){
-//        if (isAvailable()){
-//            currentRegistered++;
-//            addToWaitingList(user);
-//        }
-//    }
 
     public String getRecCenter() {
         return recCenter;
@@ -114,19 +104,9 @@ public class TimeSlot implements Serializable {
         waitingList.add(user.getEmail());
     }
 
-    void notifyUsersInWaitingList() {
-        // TODO
-    }
-
-    //pop the first user from waiting list
-    void removeFromWaitingList() {
-        // TODO
-        waitingList.remove(0);
-    }
-
     @Override
+    @NonNull
     public String toString() {
-        // TODO
         int remain = capacity - currentRegistered;
         return date.toString() + ", current available spots: "+ (Math.max(remain, 0));
     }
