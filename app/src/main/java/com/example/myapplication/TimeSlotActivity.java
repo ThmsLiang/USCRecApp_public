@@ -17,7 +17,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -89,7 +88,6 @@ public class TimeSlotActivity extends AppCompatActivity {
                 appointment.setTimeInterval(currTimeSlot);
                 appointment.setSuccessfullyBooked(false);
 
-                String message;
                 DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
                 userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
