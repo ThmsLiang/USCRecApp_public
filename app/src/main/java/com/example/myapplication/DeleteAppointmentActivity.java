@@ -122,14 +122,14 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
 
                                 if (timeSlotToUpdate != null) {
                                     recRef.update("timeSlots", FieldValue.arrayRemove(timeSlotToUpdate));
-                                    timeSlotToUpdate.put("currentRegisterd",currRegistered - 1);
+                                    timeSlotToUpdate.put("currentRegistered",currRegistered - 1);
                                     timeSlotToUpdate.put("waitingList",new ArrayList<>());
                                     recRef.update("timeSlots",FieldValue.arrayUnion(timeSlotToUpdate));
                                 }
                                 else
                                     Log.d("Database stuff", "could not find timeslot");
 
-                                SendGrid sendGrid = SendGrid.create("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");
+                                SendGrid sendGrid = SendGrid.create("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");
 
                                 SendGridMail testMail = new SendGridMail();
                                 testMail.setFrom("elimorri@usc.edu",null);
