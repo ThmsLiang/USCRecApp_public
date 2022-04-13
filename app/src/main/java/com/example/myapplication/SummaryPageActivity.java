@@ -81,7 +81,7 @@ public class SummaryPageActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists()) {
-                        //Log.d(TAG,"DocumentSnapshot data: " + doc.getData());
+                        Log.d(TAG,"DocumentSnapshot data: " + doc.getData());
                         ArrayList<Object> apptArray = (ArrayList<Object>) doc.get("Appointments");
                         if (apptArray == null)
                             return;
@@ -89,6 +89,7 @@ public class SummaryPageActivity extends AppCompatActivity {
                         // fetch and store all the data fields inside multiple arrays
                         ArrayList<String> recCenterNames = new ArrayList<>(), dates = new ArrayList<>(),
                                 times = new ArrayList<>(), prevOrCurrents = new ArrayList<>();
+                        ArrayList<Timestamp> timestamps = new ArrayList<>();
                         ArrayList<Integer> indices = new ArrayList<>();
                         int count = 0;
                         for (Object o : apptArray) {
@@ -119,6 +120,7 @@ public class SummaryPageActivity extends AppCompatActivity {
                                 continue;
                             }
                             Timestamp timeStamp = (Timestamp) timeInt.get("date");
+                            timestamps.add(timeStamp);
 
                             if (timeStamp == null) {
                                 Log.d(TAG,"missing timeStamp: skipping appt");
@@ -184,6 +186,7 @@ public class SummaryPageActivity extends AppCompatActivity {
                                     intent.putExtra("Date",dates.get(i));
                                     intent.putExtra("Time",times.get(i));
                                     intent.putExtra("Appointment", (Serializable) apptArray.get(indices.get(i)));
+                                    intent.putExtra("Timestamp",timestamps.get(i).toDate().toString());
 
                                     SummaryPageActivity.this.finish();
                                     startActivity(intent);
