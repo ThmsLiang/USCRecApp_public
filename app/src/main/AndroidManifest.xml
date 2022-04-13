@@ -27,23 +27,18 @@
             android:name=".GMapsActivity"
             android:exported="true"
             android:label="@string/title_activity_gmaps">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
 
         <activity
             android:name=".ProfileActivity"
             android:exported="false">
         </activity>
+
         <activity
             android:name=".SignUpActivity"
             android:exported="false">
         </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -55,26 +50,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".BookingPageActivity"
             android:exported="true"
-            android:label="@string/bookingPage"></activity>
+            android:label="@string/bookingPage">
+        </activity>
+
         <activity
             android:name=".TimeSlotActivity"
-            android:label="Reserve/Reminder"></activity>
+            android:label="Reserve/Reminder">
+        </activity>
+
         <activity
             android:name=".SummaryPageActivity"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAnj2H2aqxed5U-Xoo2ZHLSSCaIKeTux2w" />
     </application>
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.INTERNET" />

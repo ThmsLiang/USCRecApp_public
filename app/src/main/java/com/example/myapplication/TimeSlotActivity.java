@@ -17,6 +17,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -25,10 +26,13 @@ public class TimeSlotActivity extends AppCompatActivity {
     TimeSlot currTimeSlot;
     User currentUser;
     ArrayList<HashMap<String, Object>> appointments;
+    boolean dataUpdate;
 
     @Override
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
+        dataUpdate = false;
+
         // initialize the database if it's uninitialized yet
         if(Database.db == null) {
             Database.db = FirebaseFirestore.getInstance();
@@ -58,7 +62,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             appointments = (ArrayList<HashMap<String, Object>>) intent.getSerializableExtra("Appointments");
         }
 
-        // set the visibility of those two buttons
+        // set the visibility of the remind me button
         Button remindMe = findViewById(R.id.remindMe);
         Button reserve = findViewById(R.id.reserve);
         if(currTimeSlot.capacity > currTimeSlot.currentRegistered) {
@@ -85,12 +89,14 @@ public class TimeSlotActivity extends AppCompatActivity {
                 appointment.setTimeInterval(currTimeSlot);
                 appointment.setSuccessfullyBooked(false);
 
+                String message;
                 DocumentReference userRef = Database.db.collection("User").document(currentUser.getUSCID());
                 userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
+                        dataUpdate = true;
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -128,6 +134,7 @@ public class TimeSlotActivity extends AppCompatActivity {
                     public void onSuccess(Void unused) {
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
+                        dataUpdate = true;
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -148,10 +155,23 @@ public class TimeSlotActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                this.finish();
+                if(dataUpdate) {
+                    dataUpdate = false;
+                    onBackPressed();
+                } else {
+                    this.finish();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // the back button should go directly to the map, so when the user enter the booking page again it will get refreshed
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(TimeSlotActivity.this, GMapsActivity.class));
+        finish();
     }
 
     // check if the user already have a reservation or reminder on that rec center
