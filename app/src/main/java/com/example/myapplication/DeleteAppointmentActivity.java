@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +34,8 @@ import uk.co.jakebreen.sendgridandroid.SendGrid;
 import uk.co.jakebreen.sendgridandroid.SendGridMail;
 
 public class DeleteAppointmentActivity extends AppCompatActivity {
-    String recCenterName, currDate, currTime, currPrevOrCurr, USCIDNumber;
+    String recCenterName, currDate, currTime, currPrevOrCurr, USCIDNumber, timestamp;
+
     int delNum;
     Serializable appointment;
 
@@ -55,6 +59,7 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
             currTime = (String) intent.getSerializableExtra("Time");
             currPrevOrCurr = (String) intent.getSerializableExtra("prevOrCurrent");
             appointment = (Serializable) intent.getSerializableExtra("Appointment");
+            timestamp = (String) intent.getSerializableExtra("Timestamp");
 
         }
         LinearLayout llDel = findViewById(R.id.linearLayoutDel);
@@ -77,7 +82,7 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                 DocumentReference userRef = Database.db.collection("User").document(USCIDNumber);
                 Map appt = (Map) appointment;
                 Map tInt = (Map) appt.get("timeInterval");
-                List<String> waitingList = (List<String>) tInt.get("waitingList");
+
                 userRef.update("Appointments", FieldValue.arrayRemove(appointment)).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -90,24 +95,71 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                         }
                     }
                 });
-                SendGrid sendGrid = SendGrid.create("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");
+                DocumentReference recRef = Database.db.collection("RecCenter").document(recCenterName);
 
-                SendGridMail testMail = new SendGridMail();
-                testMail.setFrom("elimorri@usc.edu",null);
-                String subject = "Testing out delete";
-                testMail.setSubject(subject);
-                waitingList.forEach(x->testMail.addRecipient(x,null));
-                testMail.setContent("This is a test for deletion");
-                Single.fromCallable(sendGrid.send(testMail))
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(response -> {
-                            if (response.isSuccessful()) {
-                                Log.d("SendGrid","Response successful");
+                recRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot doc = task.getResult();
+                            if (doc.exists()) {
+                                Log.d("Database stuff","RecCenter data: " + doc.getData());
+                                ArrayList<TimeSlot> timeSlots = (ArrayList<TimeSlot>) doc.get("timeSlots");
+
+                                List<String> emailWaitingList = new ArrayList<>();
+                                Integer currRegistered = null;
+                                TimeSlot timeSlotToUpdate = null;
+
+                                for (TimeSlot timeslot : timeSlots) {
+                                    if (timeslot.date.toString().equals(timestamp)) {
+                                        emailWaitingList = (List<String>) timeslot.waitingList;
+                                        currRegistered = (Integer) timeslot.currentRegistered;
+                                        timeSlotToUpdate = timeslot;
+
+                                    }
+
+                                }
+
+                                if (timeSlotToUpdate != null) {
+                                    recRef.update("timeSlots", FieldValue.arrayRemove(timeSlotToUpdate));
+                                    timeSlotToUpdate.setCurrentRegistered(currRegistered - 1);
+                                    timeSlotToUpdate.setWaitingList(new ArrayList<>());
+                                    recRef.update("timeSlots",FieldValue.arrayUnion(timeSlotToUpdate));
+                                }
+                                else
+                                    Log.d("Database stuff", "could not find timeslot");
+
+                                SendGrid sendGrid = SendGrid.create("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");
+
+                                SendGridMail testMail = new SendGridMail();
+                                testMail.setFrom("elimorri@usc.edu",null);
+                                String subject = "Appointment Availability";
+                                testMail.setSubject(subject);
+                                emailWaitingList.forEach(x->testMail.addRecipientBlindCarbonCopy(x,null));
+                                testMail.setContent("An availability has opened up for your requested timeslot.");
+                                Single.fromCallable(sendGrid.send(testMail))
+                                        .subscribeOn(Schedulers.io())
+                                        .subscribe(response -> {
+                                            if (response.isSuccessful()) {
+                                                Log.d("SendGrid","Response successful");
+                                            }
+                                            else {
+                                                Log.d("SendGrid",response.getErrorMessage());
+                                            }
+                                        });
+
                             }
                             else {
-                                Log.d("SendGrid",response.getErrorMessage());
+                                Log.d("Database stuff","no such recCenter doc");
                             }
-                        });
+                        }
+                        else {
+                            Log.d("Database stuff","error retrieving recCenter doc");
+                        }
+                    }
+                });
+
+
                 DeleteAppointmentActivity.this.finish();
                 Intent intent = new Intent(DeleteAppointmentActivity.this,SummaryPageActivity.class);
                 startActivity(intent);
