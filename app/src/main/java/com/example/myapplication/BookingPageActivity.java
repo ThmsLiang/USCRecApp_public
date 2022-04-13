@@ -1,12 +1,8 @@
 package com.example.myapplication;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.content.Intent;
@@ -17,14 +13,10 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -33,22 +25,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class BookingPageActivity extends AppCompatActivity {
     String currentLocationName;
     public static RecCenter currentLocation;
-    ArrayList<TimeSlot> timeSlots;
     User currentUser;
     String TAG = "Booking page info";
     public FirebaseAuth mAuth;
-    HashMap<String, RecCenter> all_centers;
+    HashMap<String, RecCenter> all_centers = new HashMap<>();
     ArrayList<HashMap<String, Object>> all_appointments;
-
-    private boolean queryFinished = false;
+    ArrayList<TimeSlot> timeSlots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +44,9 @@ public class BookingPageActivity extends AppCompatActivity {
         setContentView(R.layout.booking_page);
 
         // enable tool bar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         // get the rec center object from the intent
         Intent intent = getIntent();
@@ -65,12 +54,11 @@ public class BookingPageActivity extends AppCompatActivity {
 
         // get the current user
         currentUser = new User();
-        currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null) {
+            currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        }
 
-        /**************fetch rec center from database******************/
-
-        all_centers = new HashMap<>();
-
+        // fetch rec centers from firebase
         // initialize the database if it's uninitialized yet
         if(Database.db == null) {
             Database.db = FirebaseFirestore.getInstance();
@@ -78,8 +66,6 @@ public class BookingPageActivity extends AppCompatActivity {
 
         //get firebase instance
         mAuth = FirebaseAuth.getInstance();
-        if (mAuth == null) Log.d(TAG,"Auth instance is null");
-
         Database.db.collection("RecCenter")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -99,6 +85,7 @@ public class BookingPageActivity extends AppCompatActivity {
     }
 
     // get all the appointments of the current user
+    @SuppressWarnings("unchecked")
     public void getAppointments() {
         Database.db.collection("User").document(currentUser.getUSCID()).get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -117,7 +104,9 @@ public class BookingPageActivity extends AppCompatActivity {
         currentLocation = all_centers.get(currentLocationName);
 
         // fetch and store all the data fields inside multiple arrays
-        ArrayList<TimeSlot> timeSlots = currentLocation.getTimeSlots();
+        if(currentLocation != null) {
+            timeSlots = currentLocation.getTimeSlots();
+        }
         ArrayList<String> dates = new ArrayList<>();
         ArrayList<String> times = new ArrayList<>();
         ArrayList<String> availabilities = new ArrayList<>();
@@ -133,7 +122,7 @@ public class BookingPageActivity extends AppCompatActivity {
             String strTime = "Time: " + timeFormat.format(date) + " - " +timeFormat.format(endDate);
             times.add(strTime);
 
-            String remainingSpots = "Remaining: " + Integer.toString(i.getCapacity() - i.currentRegistered);
+            String remainingSpots = "Remaining: " + (i.getCapacity() - i.currentRegistered);
             availabilities.add(remainingSpots);
         }
 

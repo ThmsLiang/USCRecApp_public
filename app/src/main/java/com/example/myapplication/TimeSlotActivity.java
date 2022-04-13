@@ -2,7 +2,6 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -20,16 +19,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class TimeSlotActivity extends AppCompatActivity {
     RecCenter currRecCenter;
     TimeSlot currTimeSlot;
     User currentUser;
     ArrayList<HashMap<String, Object>> appointments;
-    String TAG = "From TimeSlotActivity: ";
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
         // initialize the database if it's uninitialized yet
         if(Database.db == null) {
@@ -41,12 +39,17 @@ public class TimeSlotActivity extends AppCompatActivity {
         setContentView(R.layout.time_slot_detail);
 
         // enable tool bar
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
 
         // get the current user
         currentUser = new User();
-        currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-        currentUser.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        if(FirebaseAuth.getInstance().getCurrentUser()!= null) {
+            currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            currentUser.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+        }
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -151,14 +154,18 @@ public class TimeSlotActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // check if the user already have a reservation or reminder on that reccenter
+    // check if the user already have a reservation or reminder on that rec center
     // if so, disable the button
     // returns true if there's no duplicates
     boolean checkNoDuplicate() {
         if(!appointments.isEmpty()) {
             for (int i = 0; i < appointments.size(); ++i) {
-                if (appointments.get(i).get("recCenterName").equals(currRecCenter.getName())) {
-                    return false;
+                String first = (String)appointments.get(i).get("recCenterName");
+                String second = (String)currRecCenter.getName();
+                if(first != null && second != null) {
+                    if (first.equals(second)) {
+                        return false;
+                    }
                 }
             }
         }
