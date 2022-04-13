@@ -41,4 +41,21 @@ public class TimeSlotUnitTest {
         String email = test.getWaitingList().get(0);
         assertEquals(email, "abcdefj@gmail.com");
     }
+
+    @Test
+    public void addToWaitingListNullEmail_isCorrect() {
+        assertTrue(test.getWaitingList().isEmpty());
+        User userWithNullEmail = new User();
+        test.addToWaitingList(userWithNullEmail);
+        assertTrue(test.getWaitingList().isEmpty());
+    }
+
+    @Test
+    public void addToWaitingListEmptyEmail_isCorrect() {
+        assertTrue(test.getWaitingList().isEmpty());
+        User userWithoutEmail = new User();
+        userWithoutEmail.email = "";
+        test.addToWaitingList(userWithoutEmail);
+        assertTrue(test.getWaitingList().isEmpty());
+    }
 }

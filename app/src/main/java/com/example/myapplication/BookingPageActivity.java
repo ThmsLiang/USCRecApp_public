@@ -163,7 +163,7 @@ public class BookingPageActivity extends AppCompatActivity {
     }
 
     // helper function for date calculation
-    public Date addHoursToJavaUtilDate(Date date, int hours) {
+    public static Date addHoursToJavaUtilDate(Date date, int hours) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.HOUR_OF_DAY, hours);

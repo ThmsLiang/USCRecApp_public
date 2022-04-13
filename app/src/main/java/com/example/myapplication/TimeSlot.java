@@ -101,7 +101,9 @@ public class TimeSlot implements Serializable {
 
     // other methods
     void addToWaitingList(User user) {
-        waitingList.add(user.getEmail());
+        if(user.getEmail() != null && !user.getEmail().isEmpty()) {
+            waitingList.add(user.getEmail());
+        }
     }
 
     @Override

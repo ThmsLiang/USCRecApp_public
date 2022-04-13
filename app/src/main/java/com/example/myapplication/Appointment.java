@@ -1,7 +1,6 @@
 package com.example.myapplication;
 
 import java.io.Serializable;
-import java.util.Date;
 
 public class Appointment implements Serializable {
     String recCenterName;
@@ -34,13 +33,8 @@ public class Appointment implements Serializable {
     }
 
     // other methods
-
     public String toString(){
         java.util.Date date = timeInterval.getDate();
         return recCenterName;
-    }
-
-    void remind(Appointment appointment) {
-
     }
 }
