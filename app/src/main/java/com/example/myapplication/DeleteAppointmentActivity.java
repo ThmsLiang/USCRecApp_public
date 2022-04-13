@@ -104,16 +104,16 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                             DocumentSnapshot doc = task.getResult();
                             if (doc.exists()) {
                                 Log.d("Database stuff","RecCenter data: " + doc.getData());
-                                ArrayList<TimeSlot> timeSlots = (ArrayList<TimeSlot>) doc.get("timeSlots");
+                                ArrayList<Map> timeSlots = (ArrayList<Map>) doc.get("timeSlots");
 
-                                List<String> emailWaitingList = new ArrayList<>();
+                                ArrayList<String> emailWaitingList = new ArrayList<>();
                                 Integer currRegistered = null;
-                                TimeSlot timeSlotToUpdate = null;
+                                Map timeSlotToUpdate = null;
 
-                                for (TimeSlot timeslot : timeSlots) {
-                                    if (timeslot.date.toString().equals(timestamp)) {
-                                        emailWaitingList = (List<String>) timeslot.waitingList;
-                                        currRegistered = (Integer) timeslot.currentRegistered;
+                                for (Map timeslot : timeSlots) {
+                                    if (timeslot.get("date").toString().equals(timestamp)) {
+                                        emailWaitingList = (ArrayList<String>) timeslot.get("waitingList");
+                                        currRegistered = (Integer) timeslot.get("currentRegistered");
                                         timeSlotToUpdate = timeslot;
 
                                     }
@@ -122,8 +122,8 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
 
                                 if (timeSlotToUpdate != null) {
                                     recRef.update("timeSlots", FieldValue.arrayRemove(timeSlotToUpdate));
-                                    timeSlotToUpdate.setCurrentRegistered(currRegistered - 1);
-                                    timeSlotToUpdate.setWaitingList(new ArrayList<>());
+                                    timeSlotToUpdate.put("currentRegisterd",currRegistered - 1);
+                                    timeSlotToUpdate.put("waitingList",new ArrayList<>());
                                     recRef.update("timeSlots",FieldValue.arrayUnion(timeSlotToUpdate));
                                 }
                                 else
