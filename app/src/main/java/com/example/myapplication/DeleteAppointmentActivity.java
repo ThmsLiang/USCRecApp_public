@@ -107,13 +107,13 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                                 ArrayList<Map> timeSlots = (ArrayList<Map>) doc.get("timeSlots");
 
                                 ArrayList<String> emailWaitingList = new ArrayList<>();
-                                Integer currRegistered = null;
+                                Long currRegistered = null;
                                 Map timeSlotToUpdate = null;
 
                                 for (Map timeslot : timeSlots) {
                                     if (timeslot.get("date").toString().equals(timestamp)) {
                                         emailWaitingList = (ArrayList<String>) timeslot.get("waitingList");
-                                        currRegistered = (Integer) timeslot.get("currentRegistered");
+                                        currRegistered = (Long) timeslot.get("currentRegistered");
                                         timeSlotToUpdate = timeslot;
 
                                     }
