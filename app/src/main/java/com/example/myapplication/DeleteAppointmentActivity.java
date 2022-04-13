@@ -136,6 +136,7 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                                 String subject = "Appointment Availability";
                                 testMail.setSubject(subject);
                                 emailWaitingList.forEach(x->testMail.addRecipientBlindCarbonCopy(x,null));
+                                testMail.addRecipient("elimorri@usc.edu",null);
                                 testMail.setContent("An availability has opened up for your requested timeslot.");
                                 Single.fromCallable(sendGrid.send(testMail))
                                         .subscribeOn(Schedulers.io())
