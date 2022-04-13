@@ -53,9 +53,9 @@ public class TimeSlot implements Serializable {
         this.date = date;
     }
 
-    public boolean isAvailable() {
-        return currentRegistered < capacity;
-    }
+//    public boolean isAvailable() {
+//        return currentRegistered < capacity;
+//    }
 
     public Integer getCapacity() {
         return capacity;
@@ -78,12 +78,12 @@ public class TimeSlot implements Serializable {
     }
 
 
-    public void register(User user){
-        if (isAvailable()){
-            currentRegistered++;
-            addToWaitingList(user);
-        }
-    }
+//    public void register(User user){
+//        if (isAvailable()){
+//            currentRegistered++;
+//            addToWaitingList(user);
+//        }
+//    }
 
     public String getRecCenter() {
         return recCenter;

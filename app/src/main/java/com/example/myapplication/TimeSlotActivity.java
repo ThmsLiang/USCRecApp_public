@@ -48,6 +48,7 @@ public class TimeSlotActivity extends AppCompatActivity {
 //        currentUser.USCID = "1234567890";
 //        currentUser.Appointments = new ArrayList<>();
         currentUser.setUSCID(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        currentUser.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
 
         Intent intent = getIntent();
         if(intent != null) {
@@ -58,7 +59,7 @@ public class TimeSlotActivity extends AppCompatActivity {
         // set the visibility of those two buttons
         Button remindMe = findViewById(R.id.remindMe);
         Button reserve = findViewById(R.id.reserve);
-        if(currTimeSlot.isAvailable()) {
+        if(currTimeSlot.capacity > currTimeSlot.currentRegistered) {
             remindMe.setEnabled(false);
             reserve.setEnabled(true);
         } else {
@@ -68,6 +69,12 @@ public class TimeSlotActivity extends AppCompatActivity {
 
         // set on click activity
         remindMe.setOnClickListener((View view) -> {
+            // update the recCenter's data
+            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
+            currTimeSlot.addToWaitingList(currentUser);
+            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
+
             // add the appointment to the user's record
             Appointment appointment = new Appointment();
             appointment.setRecCenterName(currRecCenter.getName());
@@ -88,18 +95,17 @@ public class TimeSlotActivity extends AppCompatActivity {
                     success.show();
                 }
             });
-
-            // update the recCenter's data
-            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
-
-            // decrease the number of available spots of the current time slot
-            currTimeSlot.addToWaitingList(currentUser);
-            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
         });
 
         // callback function for the reserve button
         reserve.setOnClickListener((View view) -> {
+            // update the recCenter's data
+            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot));
+            int registerNum = currTimeSlot.getCurrentRegistered();
+            currTimeSlot.setCurrentRegistered(registerNum + 1);
+            recCenterRef.update("timeSlots",FieldValue.arrayUnion(currTimeSlot));
+
             // add the appointment to the user's record
             Appointment appointment = new Appointment();
             appointment.setRecCenterName(currRecCenter.getName());
@@ -121,27 +127,27 @@ public class TimeSlotActivity extends AppCompatActivity {
                 }
             });
 
-            // decrease the number of available spots of the current time slot
-            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
-            //currTimeSlot.setCurrentRegistered(currTimeSlot.getCurrentRegistered() + 1);
-            TimeSlot newTimeslot = new TimeSlot(currTimeSlot);
-            newTimeslot.setCurrentRegistered(newTimeslot.currentRegistered + 1);
-            recCenterRef.update("timeSlots",FieldValue.arrayUnion(newTimeslot))
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Log.d(TAG, "DocumentSnapshot successfully updated! currentRegisted: " + newTimeslot.currentRegistered);
-                }
-            });
-
-            // update the recCenter's data
-            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot))
-            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Log.d(TAG, "DocumentSnapshot successfully removed!");
-                }
-            });
+//            // decrease the number of available spots of the current time slot
+//            DocumentReference recCenterRef = Database.db.collection("RecCenter").document(currRecCenter.getName());
+//            currTimeSlot.setCurrentRegistered(currTimeSlot.getCurrentRegistered() + 1);
+//            TimeSlot newTimeslot = new TimeSlot(currTimeSlot);
+//            newTimeslot.setCurrentRegistered(newTimeslot.currentRegistered + 1);
+//            recCenterRef.update("timeSlots",FieldValue.arrayUnion(newTimeslot))
+//            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void unused) {
+//                    Log.d(TAG, "DocumentSnapshot successfully updated! currentRegisted: " + newTimeslot.currentRegistered);
+//                }
+//            });
+//
+//            // update the recCenter's data
+//            recCenterRef.update("timeSlots",FieldValue.arrayRemove(currTimeSlot))
+//            .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void unused) {
+//                    Log.d(TAG, "DocumentSnapshot successfully removed!");
+//                }
+//            });
 
         });
     }
