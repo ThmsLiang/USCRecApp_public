@@ -5,11 +5,8 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
-import android.content.Intent;
 import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
@@ -32,10 +29,6 @@ public class EspressoBookingPageActivityOnCreateTest {
     @Rule
     public ActivityScenarioRule<MainActivity> MainActivityRule = new ActivityScenarioRule<>(
             MainActivity.class);
-    public static GMapsActivity gMapsActivity;
-    public static BookingPageActivity bookingPageActivity;
-    private UiDevice mDevice;
-    private UiObject marker;
 
     @Before
     public void setUp() {
