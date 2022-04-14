@@ -71,41 +71,17 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
 
 
         //put marker to map
-        LatLng lyon = new LatLng(34.024555845264075, -118.28840694512736);
-        mMap.addMarker(new MarkerOptions().position(lyon).title("lyon")).showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lyon,17));
-        LatLng cromwell = new LatLng(34.0222295647154, -118.28784044512746);
-        mMap.addMarker(new MarkerOptions().position(cromwell).title("Cromwell Track")).showInfoWindow();
-        LatLng uac = new LatLng(34.024203589076414, -118.2879799201736);
-        mMap.addMarker(new MarkerOptions().position(uac).title("UAC Lap Swim")).showInfoWindow();
+        addMarker(mMap, 34.024555845264075, -118.28840694512736, "Lyon Center");
+        addMarker(mMap, 34.0222295647154, -118.28784044512746, "Cromwell Track");
+        addMarker(mMap, 34.024203589076414, -118.2879799201736, "UAC Lap Swim");
+//        LatLng lyon = new LatLng(34.024555845264075, -118.28840694512736);
+//        mMap.addMarker(new MarkerOptions().position(lyon).title("lyon")).showInfoWindow();
+//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lyon,17));
+//        LatLng cromwell = new LatLng(34.0222295647154, -118.28784044512746);
+//        mMap.addMarker(new MarkerOptions().position(cromwell).title("Cromwell Track")).showInfoWindow();
+//        LatLng uac = new LatLng(34.024203589076414, -118.2879799201736);
+//        mMap.addMarker(new MarkerOptions().position(uac).title("UAC Lap Swim")).showInfoWindow();
 
-//        /**************fetch reccenter from database******************/
-//
-//        HashMap<String, RecCenter> all_centers = new HashMap<>();
-//
-//        // initialize the database if it's uninitialized yet
-//        if(Database.db == null) {
-//            Database.db = FirebaseFirestore.getInstance();
-//        }
-//
-//        //get firebase instance
-//        mAuth = FirebaseAuth.getInstance();
-//        if (mAuth == null) Log.d(TAG,"Auth instance is null");
-//
-//        Database.db.collection("RecCenter")
-//                .get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if(task.isSuccessful()){
-//                            for (QueryDocumentSnapshot document: task.getResult()){
-//                                //Log.d(TAG, document.getId() + " => " + document.getData());
-//                                all_centers.put(document.getId(), document.toObject(RecCenter.class));
-//                                Log.d(TAG, document.getId() + " => " + all_centers.get(document.getId()));
-//                            }
-//                        }
-//                    }
-//                });
 
         //set marker onclick event
         GoogleMap.OnMarkerClickListener listener = new GoogleMap.OnMarkerClickListener() {
@@ -113,7 +89,7 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
             public boolean onMarkerClick(@NonNull Marker marker) {
                 Intent intent = new Intent(GMapsActivity.this, BookingPageActivity.class);
                 intent.putExtra("RecCenter",
-                        marker.getTitle().equals("lyon") ?
+                        marker.getTitle().equals("Lyon Center") ?
                         "Lyon Center" :
                         marker.getTitle().equals("Cromwell Track") ?
                         "Cromwell Track" :
@@ -126,25 +102,25 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(listener);
     }
 
-    public List<Appointment> readUser(String uscid){
-        List<Appointment> appointments = new ArrayList<>();
-        Database.db
-                .collection("User")
-                .whereEqualTo("USCID", uscid)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()){
-                            for (QueryDocumentSnapshot doc : task.getResult()){
-                                User user = doc.toObject(User.class);
-                                appointments.addAll(user.getUpcoming());
-                            }
-                        }
-                    }
-                });
-        return appointments;
-    }
+//    public List<Appointment> readUser(String uscid){
+//        List<Appointment> appointments = new ArrayList<>();
+//        Database.db
+//                .collection("User")
+//                .whereEqualTo("USCID", uscid)
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()){
+//                            for (QueryDocumentSnapshot doc : task.getResult()){
+//                                User user = doc.toObject(User.class);
+//                                appointments.addAll(user.getUpcoming());
+//                            }
+//                        }
+//                    }
+//                });
+//        return appointments;
+//    }
 
     public void toSummary(View view){
         Log.d("Map Activity debug: ","entered toSummary");
@@ -152,5 +128,21 @@ public class GMapsActivity extends FragmentActivity implements OnMapReadyCallbac
         finish();
         startActivity(intent);
     }
+
+    public static void addMarker(GoogleMap mMap, double latitude, double longitude, String title){
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions options = returnMarkerOption(latitude, longitude, title);
+        mMap.addMarker(options).showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+
+    }
+
+    public static MarkerOptions returnMarkerOption(double latitude, double longitude, String title){
+        LatLng latLng = new LatLng(latitude, longitude);
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLng).title(title);
+        return options;
+    }
+
 }
 
