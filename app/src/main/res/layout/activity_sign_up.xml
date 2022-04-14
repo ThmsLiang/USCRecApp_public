@@ -32,7 +32,6 @@
 
         <EditText
             android:id="@+id/editTextEmail"
-            android:contentDescription="email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
@@ -46,7 +45,6 @@
 
         <EditText
             android:id="@+id/editTextPassword"
-            android:contentDescription="password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"

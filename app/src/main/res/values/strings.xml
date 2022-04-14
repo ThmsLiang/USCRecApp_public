@@ -11,5 +11,6 @@
     <string name="appointmentFailed">Something went wrong with the reservation ...</string>
     <string name="reminderSucceed">We will remind you when additional spots open!</string>
     <string name="reminderFailed">Something went wrong with the reminder ...</string>
+    <string name="toastForLoginFailure">Login failed - please check credentials and try again.</string>
     <string name="duplicateWarning">Sorry, but you already have one reservation / reminder from the current recreation center</string>
 </resources>
