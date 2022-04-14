@@ -16,8 +16,17 @@ public class RecCenter implements Serializable {
         return result;
     }
 
-    private static ArrayList<TimeSlot> lyon_timeslot = new ArrayList<>(Arrays.asList(new TimeSlot("lyon", getCalendar(),1 )));
-    static RecCenter lyon = new RecCenter("lyon", 34.024555845264075, -118.28840694512736, lyon_timeslot);
+    static RecCenter lyon = new RecCenter(
+            "lyon",
+            34.024555845264075,
+            -118.28840694512736,
+            new ArrayList<>(Arrays.asList(
+                    new TimeSlot("lyon",
+                            getCalendar(),
+                            10)
+            ))
+    );
+
     static RecCenter Cromwell_Track = new RecCenter(
             "Cromwell Track",
             34.0220428266366,
