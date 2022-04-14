@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener{
     ImageView imageView;
     EditText editTextUSCID;
+    boolean isLoaded;
     Button button;
     Button continueButton;
     Uri uriProfileImage;
@@ -66,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         imageView.setOnClickListener(this);
         button.setOnClickListener(this);
         continueButton.setOnClickListener(this);
-        
+        isLoaded = false;
         loadUserInfo();
 
     }
@@ -89,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 Log.d("Loading User Debug","no user photo url");
             if (user.getDisplayName() != null) {
                 editTextUSCID.setText(user.getDisplayName());
+                isLoaded = true;
                 editTextUSCID.setKeyListener(null);
             }
             else {
@@ -143,7 +145,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 });
             }
-
+            if (isLoaded)
+                return;
             Map<String, Object> myUser = new HashMap<>();
             ArrayList<Object> apptBlank = new ArrayList<>();
             myUser.put("Appointments",apptBlank);
@@ -159,6 +162,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d("Adding user debug: ", "DocumentSnapshot successfully written!");
+                            isLoaded = true;
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {

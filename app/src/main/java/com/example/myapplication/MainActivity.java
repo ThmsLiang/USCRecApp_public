@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivity(intent);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),R.string.toastForLoginFailure,Toast.LENGTH_SHORT).show();
                 }
             }
         });

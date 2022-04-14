@@ -42,7 +42,7 @@ public class MainActivityUtilUnitTest {
     public void isPasswordValid_isCorrect()
     {
         assertTrue("a password with at least 6 characters should be valid",MainActivity.isPasswordValid("aEFfo#@$(8u '?\n@%#ih",passwordEdit));
-        assertFalse("a null password should be invalid", MainActivity.isEmailValid(null,passwordEdit));
-        assertFalse("a password with less than 6 char should be invalid", MainActivity.isEmailValid("# E12",passwordEdit));
+        assertFalse("a null password should be invalid", MainActivity.isPasswordValid(null,passwordEdit));
+        assertFalse("a password with less than 6 char should be invalid", MainActivity.isPasswordValid("# E12",passwordEdit));
     }
 }
