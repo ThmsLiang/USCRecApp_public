@@ -123,20 +123,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void saveUserInfo() {
-        String USCIDNumber = editTextUSCID.getText().toString();
-        Pattern pattern = Pattern.compile("\\d+");
-        if (USCIDNumber.isEmpty()) {
-            editTextUSCID.setError("USC ID number required");
-            editTextUSCID.requestFocus();
-        }
-        else if(!pattern.matcher(USCIDNumber).matches()) {
-            editTextUSCID.setError("numeric characters only");
-            editTextUSCID.requestFocus();
-        }
-        else if(USCIDNumber.length() != 10) {
-            editTextUSCID.setError("USC ID number must have 10 digits");
-            editTextUSCID.requestFocus();
-        }
+        String USCIDNumber = editTextUSCID.getText().toString().trim();
+        if (!isUSCIDValid(USCIDNumber,editTextUSCID))
+            return;
         else {
             FirebaseUser user = mAuth.getCurrentUser();
 
@@ -162,6 +151,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             myUser.put("email", user.getEmail());
             myUser.put("photoFileName", "");
             myUser.put("userName", USCIDNumber.replaceAll("@usc.edu",""));
+
 
             Database.db.collection("User").document(USCIDNumber)
                     .set(myUser)
@@ -243,5 +233,34 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         startActivityForResult(Intent.createChooser(intent,"Select Profile Image"), CHOOSE_IMAGE);
 
+    }
+
+    public static boolean isUSCIDValid(String USCIDNumber, EditText USCIDEdit)
+    {
+        Pattern pattern = Pattern.compile("\\d+");
+        if (USCIDNumber == null || USCIDEdit == null) {
+            return false;
+        }
+
+        if (USCIDNumber.isEmpty()) {
+            USCIDEdit.setError("USC ID number required");
+            USCIDEdit.requestFocus();
+            return false;
+
+        }
+        else if(!pattern.matcher(USCIDNumber).matches()) {
+            USCIDEdit.setError("numeric characters only");
+            USCIDEdit.requestFocus();
+            return false;
+
+        }
+        else if(USCIDNumber.length() != 10) {
+            USCIDEdit.setError("USC ID number must have 10 digits");
+            USCIDEdit.requestFocus();
+            return false;
+
+        }
+
+        return true;
     }
 }
