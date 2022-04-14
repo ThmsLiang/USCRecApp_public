@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -61,26 +62,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-
-        if(email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-
-        }
-
-        else if (password.isEmpty()) {
-            editTextPassword.setError("Password is required");
-            editTextPassword.requestFocus();
-        }
-
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Please enter a valid email");
-            editTextEmail.requestFocus();
-        }
-        else if (password.length() < 6) {
-            editTextPassword.setError("Password length must be at least 6");
-            editTextPassword.requestFocus();
-        }
+        if (!isEmailValid(email,editTextEmail) || !isPasswordValid(password,editTextPassword))
+            return;
         progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -101,14 +84,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public static boolean isEmailValid(String email, EditText emailEdit)
+    {
+        if (email == null || emailEdit == null)
+            return false;
+
+        if(email.isEmpty()) {
+            emailEdit.setError("Email is required");
+            emailEdit.requestFocus();
+            return false;
+
+        }
+
+        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailEdit.setError("Please enter a valid email");
+            emailEdit.requestFocus();
+            return false;
+
+        }
+
+        else if (!email.endsWith("@usc.edu")) {
+            emailEdit.setError("Please enter a USC email address");
+            emailEdit.requestFocus();
+            return false;
+
+        }
+
+        return true;
+    }
+
+    public static boolean isPasswordValid(String password, EditText passEdit)
+    {
+
+        if (password == null || passEdit == null)
+            return false;
+
+        if (password.isEmpty()) {
+            passEdit.setError("Password is required");
+            passEdit.requestFocus();
+            return false;
+
+        }
+
+        else if (password.length() < 6) {
+            passEdit.setError("Password length must be at least 6");
+            passEdit.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
 
-//        if (mAuth.getCurrentUser() != null) {
-//            finish();
-//            startActivity(new Intent(this,ProfileActivity.class));
-//        }
 
     }
 

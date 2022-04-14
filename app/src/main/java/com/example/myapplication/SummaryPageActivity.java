@@ -83,73 +83,18 @@ public class SummaryPageActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         Log.d(TAG,"DocumentSnapshot data: " + doc.getData());
                         ArrayList<Object> apptArray = (ArrayList<Object>) doc.get("Appointments");
-                        if (apptArray == null)
-                            return;
+
 
                         // fetch and store all the data fields inside multiple arrays
                         ArrayList<String> recCenterNames = new ArrayList<>(), dates = new ArrayList<>(),
                                 times = new ArrayList<>(), prevOrCurrents = new ArrayList<>();
                         ArrayList<Timestamp> timestamps = new ArrayList<>();
                         ArrayList<Integer> indices = new ArrayList<>();
-                        int count = 0;
-                        for (Object o : apptArray) {
-                            Map appt = (Map) o;
-                            Boolean successfullyBooked = (boolean)appt.get("successfullyBooked");
 
-                            if (successfullyBooked == null) {
-                                Log.d(TAG,"missing successfullyBooked: skipping appt");
-                                count++;
-                                continue;
-                            }
-
-                            if (!successfullyBooked) {
-                                count++;
-                                continue;
-                            }
-                            String recCenterName = (String) appt.get("recCenterName");
-
-                            if (recCenterName == null) {
-                                Log.d(TAG,"missing recCenterName: skipping appt");
-                                count++;
-                                continue;
-                            }
-                            Map timeInt = (Map) appt.get("timeInterval");
-                            if (timeInt == null) {
-                                Log.d(TAG,"missing timeInt: skipping appt");
-                                count++;
-                                continue;
-                            }
-                            Timestamp timeStamp = (Timestamp) timeInt.get("date");
-                            timestamps.add(timeStamp);
-
-                            if (timeStamp == null) {
-                                Log.d(TAG,"missing timeStamp: skipping appt");
-                                count++;
-                                continue;
-                            }
-                            indices.add(count);
-                            recCenterNames.add(recCenterName);
-                            Date apptDate = timeStamp.toDate();
-
-                            Date currentDate = new Date();
-                            String prevOrCurr = (apptDate.compareTo(currentDate) > 0) ? "current" : "previous";
-                            boolean isCurr = prevOrCurr.equals("current");
-                            prevOrCurr += " appointment";
-                            prevOrCurrents.add(prevOrCurr);
-
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            String strDate = "Date: " + dateFormat.format(apptDate);
-
-                            dates.add(strDate);
-
-                            DateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
-                            Date endDate = addHoursToJavaUtilDate(apptDate, (Long) timeInt.get("duration"));
-
-                            String strTime = "Time: " + timeFormat.format(apptDate) + " - " +timeFormat.format(endDate);
-                            times.add(strTime);
-                            Log.d(TAG,"RecCenter Name: " + recCenterName + "\ndate: " + strDate + "\ntime: " + strTime + "\nprevOrCurr: " + prevOrCurr);
-                        count++;
+                        if (!appointmentDataParse(apptArray,recCenterNames,dates,times,prevOrCurrents,timestamps,indices)) {
+                            Log.d("Parsing Debug","apptArray was invalid");
                         }
+
 
                         // construct a list of hashmap for the content of the listView
                         ArrayList<HashMap<String, Object>> listItem = new ArrayList<>();
@@ -232,4 +177,94 @@ public class SummaryPageActivity extends AppCompatActivity {
         }
         return calendar.getTime();
     }
+
+    public static boolean appointmentDataParse(ArrayList<Object> apptArray, ArrayList<String> recCenterNames,ArrayList<String> dates, ArrayList<String> times,
+                                            ArrayList<String> prevOrCurrents, ArrayList<Timestamp> timestamps, ArrayList<Integer> indices)
+    {
+        boolean ret = true;
+        if (apptArray == null)
+            return false;
+
+        int count = 0;
+        for (Object o : apptArray) {
+            if (!(o instanceof Map)) {
+                //Log.d(TAG,"invalid appointment");
+                count++;
+                ret = false;
+                continue;
+            }
+
+            Map appt = (Map) o;
+            if (!(appt.get("successfullyBooked") instanceof Boolean)) {
+                //Log.d(TAG,"missing successfullyBooked: skipping appt");
+                count++;
+                ret = false;
+                continue;
+            }
+
+            Boolean successfullyBooked = (Boolean)appt.get("successfullyBooked");
+
+            if (!successfullyBooked) {
+                count++;
+                continue;
+            }
+
+            if (!(appt.get("recCenterName") instanceof String)) {
+
+                //Log.d(TAG,"missing recCenterName: skipping appt");
+                count++;
+                ret = false;
+                continue;
+
+            }
+            String recCenterName = (String) appt.get("recCenterName");
+
+            if (!(appt.get("timeInterval") instanceof Map)) {
+                //Log.d(TAG,"missing timeInt: skipping appt");
+                count++;
+                ret = false;
+                continue;
+            }
+
+            Map timeInt = (Map) appt.get("timeInterval");
+
+
+            if (!(timeInt.get("date") instanceof Timestamp)) {
+                //Log.d(TAG,"missing timeStamp: skipping appt");
+                count++;
+                ret = false;
+                continue;
+            }
+
+            Timestamp timeStamp = (Timestamp) timeInt.get("date");
+            timestamps.add(timeStamp);
+
+
+            indices.add(count);
+            recCenterNames.add(recCenterName);
+            Date apptDate = timeStamp.toDate();
+
+            Date currentDate = new Date();
+            String prevOrCurr = (apptDate.compareTo(currentDate) > 0) ? "current" : "previous";
+            boolean isCurr = prevOrCurr.equals("current");
+            prevOrCurr += " appointment";
+            prevOrCurrents.add(prevOrCurr);
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String strDate = "Date: " + dateFormat.format(apptDate);
+
+            dates.add(strDate);
+
+            DateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
+            Date endDate = addHoursToJavaUtilDate(apptDate, (Long) timeInt.get("duration"));
+
+            String strTime = "Time: " + timeFormat.format(apptDate) + " - " +timeFormat.format(endDate);
+            times.add(strTime);
+           // Log.d(TAG,"RecCenter Name: " + recCenterName + "\ndate: " + strDate + "\ntime: " + strTime + "\nprevOrCurr: " + prevOrCurr);
+            count++;
+        }
+
+        return ret;
+    }
+
 }

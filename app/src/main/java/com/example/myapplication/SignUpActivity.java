@@ -18,6 +18,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
+import static com.example.myapplication.MainActivity.isEmailValid;
+import static com.example.myapplication.MainActivity.isPasswordValid;
+
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener{
     EditText editTextEmail, editTextPassword;
@@ -42,26 +45,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        if(email.isEmpty()) {
-            editTextEmail.setError("Email is required");
-            editTextEmail.requestFocus();
-
-        }
-
-        else if (password.isEmpty()) {
-            editTextPassword.setError("Password is required");
-            editTextPassword.requestFocus();
-
-        }
-
-        else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            editTextEmail.setError("Please enter a valid email");
-            editTextEmail.requestFocus();
-        }
-        else if (password.length() < 6) {
-            editTextPassword.setError("Password length must be at least 6");
-            editTextPassword.requestFocus();
-        }
+        if (!isEmailValid(email,editTextEmail) || !isPasswordValid(password,editTextPassword))
+            return;
         progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
