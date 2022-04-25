@@ -5,7 +5,7 @@ An Android app for USC students to make reservations at recreation centers conve
 
 ## Description
 
-This is an Android app designed for USC students during the COVID-19 pandemic. 
+This is an Android app designed for USC students during the COVID-19 pandemic.
 
 Under USC's COVID-19 policy, students has to make a reservation before entering the recreation centers on campus. There will be several timeslots per day, but each timeslots will have a capacity.
 
@@ -21,11 +21,11 @@ The user can also click on the button on the top right corner of the screen when
 
 ## Getting Started
 
-  
+
 
 ### Dependencies
 
-  
+
 
 * This app supports a minimum Sdk version of 28.  But the target Sdk version is 32.
 
@@ -34,13 +34,13 @@ The user can also click on the button on the top right corner of the screen when
 
 ### Installing
 
-  
+
 
 * Clone this repository to your local machine and open it in Android Studio.
 
 * Create a new device enmulator that satisfies the SDK requirements (>=28) to install the app.
 
-  
+
 
 ### Executing program
 
@@ -52,28 +52,28 @@ The user can also click on the button on the top right corner of the screen when
 
 ## Help
 
-  Comment on Github for any issues and we would love to help!
+Comment on Github for any issues and we would love to help!
 
 ## Authors
 
-  
+
 
 Contributors names and contact info
 
-  
 
- **Ryan (Yuzhe) Wang**
- [@Ryan (Yuzhe) Wang](yuzhew@usc.edu)
+
+**Ryan (Yuzhe) Wang**
+[@Ryan (Yuzhe) Wang](https://github.com/Yuzhe-Wang)
 
 **Thomas Liang**
- [@Thomas Liang](toml@usc.edu)
-  
-  **Eli Morris**
- [@Eli Morris](elimorri@usc.edu)
+[@Thomas Liang](https://github.com/ThmsLiang)
+
+**Eli Morris**
+[@Eli Morris](https://github.com/silorriem)
 
 ## Version History
 
-  
+
 2.5
 
 * Doing a sprint cycle of 2 weeks for some additional features and wrapping it up. See the sprint document for detail.
@@ -94,7 +94,7 @@ Contributors names and contact info
 
 * Consulting the customer to generate the requirements document
 
-  
+
 ## Acknowledgments
 
 Inspiration for is Readme file
