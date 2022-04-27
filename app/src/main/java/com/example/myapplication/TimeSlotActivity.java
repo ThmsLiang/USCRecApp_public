@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -9,15 +12,19 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class TimeSlotActivity extends AppCompatActivity {
@@ -26,6 +33,10 @@ public class TimeSlotActivity extends AppCompatActivity {
     User currentUser;
     ArrayList<HashMap<String, Object>> appointments;
     boolean dataUpdate;
+
+    public static int requestCode;
+    public static ArrayList<Date> myDates = new ArrayList<>();
+    public static long timeBeforeAppointment = 1000 * 60 * 30; //30 min before appt by default
 
     @Override
     @SuppressWarnings("unchecked")
@@ -59,6 +70,7 @@ public class TimeSlotActivity extends AppCompatActivity {
             currTimeSlot = (TimeSlot) intent.getSerializableExtra("TimeSlot");
             currRecCenter = (RecCenter) intent.getSerializableExtra("RecCenter");
             appointments = (ArrayList<HashMap<String, Object>>) intent.getSerializableExtra("Appointments");
+
         }
 
         // set the visibility of the remind me button
@@ -71,6 +83,33 @@ public class TimeSlotActivity extends AppCompatActivity {
             remindMe.setEnabled(true);
             reserve.setEnabled(false);
         }
+
+
+        DocumentReference userRef2 = Database.db.collection("User").document(currentUser.getUSCID());
+
+        userRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Log.d("debug info", "DocumentSnapshot data: " + doc.getData());
+                        ArrayList<Object> apptArray = (ArrayList<Object>) doc.get("Appointments");
+                        if (apptArray != null) {
+                            requestCode = apptArray.size() - 1;
+                        } else {
+                            requestCode = 0;
+                        }
+                    }
+                    else {
+                        requestCode = 0;
+                    }
+                }
+                else {
+                    requestCode = 0;
+                }
+            }
+        });
 
         // set on click activity
         remindMe.setOnClickListener((View view) -> {
@@ -95,6 +134,10 @@ public class TimeSlotActivity extends AppCompatActivity {
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
                         dataUpdate = true;
+                        Date myDate = currTimeSlot.getDate();
+                        myDates.add(myDate);
+                        Date appointmentDate = new Date(myDate.getTime() - timeBeforeAppointment);
+                        createNotification(appointmentDate);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -133,6 +176,8 @@ public class TimeSlotActivity extends AppCompatActivity {
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
                         dataUpdate = true;
+
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -146,6 +191,8 @@ public class TimeSlotActivity extends AppCompatActivity {
                 warning.show();
             }
         });
+
+
     }
 
     // enable the back button
@@ -188,5 +235,16 @@ public class TimeSlotActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    public void createNotification(Date notifyTime) {
+        Intent intent = new Intent(this,AlarmReceiver.class);
+
+
+        PendingIntent broadcast = PendingIntent.getBroadcast(this,requestCode,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+        MainActivity.alarmManager.set(AlarmManager.RTC_WAKEUP,notifyTime.getTime(), broadcast);
+        requestCode++;
+
     }
 }
