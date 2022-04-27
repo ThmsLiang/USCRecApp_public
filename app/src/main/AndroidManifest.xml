@@ -13,9 +13,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name=".SettingActivity"
+            android:name=".NotificationSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".DeleteAppointmentActivity"
@@ -64,6 +64,17 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAnj2H2aqxed5U-Xoo2ZHLSSCaIKeTux2w" />
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="morris.eli.action.DISPLAY_NOTIFICATION" />
+            </intent-filter>
+        </receiver>
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>
