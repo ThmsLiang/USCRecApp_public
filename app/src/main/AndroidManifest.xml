@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.myapplication">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -29,13 +33,19 @@
         <activity
             android:name=".GMapsActivity"
             android:exported="true"
-            android:label="@string/title_activity_gmaps"></activity>
+            android:label="@string/title_activity_gmaps">
+        </activity>
+
         <activity
             android:name=".ProfileActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+        </activity>
+
         <activity
             android:name=".SignUpActivity"
-            android:exported="false"></activity>
+            android:exported="false">
+        </activity>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -48,13 +58,18 @@
         <activity
             android:name=".BookingPageActivity"
             android:exported="true"
-            android:label="@string/bookingPage"></activity>
+            android:label="@string/bookingPage">
+        </activity>
+
         <activity
             android:name=".TimeSlotActivity"
-            android:label="Reserve/Reminder"></activity>
+            android:label="Reserve/Reminder">
+        </activity>
+
         <activity
             android:name=".SummaryPageActivity"
-            android:exported="true"></activity>
+            android:exported="true">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
