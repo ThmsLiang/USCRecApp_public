@@ -129,7 +129,7 @@ public class DeleteAppointmentActivity extends AppCompatActivity {
                                 else
                                     Log.d("Database stuff", "could not find timeslot");
 
-                                SendGrid sendGrid = SendGrid.create("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");
+                                SendGrid sendGrid = SendGrid.create("INPUT_YOUR_SENDDRID_API_KEY_HERE");
 
                                 SendGridMail testMail = new SendGridMail();
                                 testMail.setFrom("elimorri@usc.edu",null);

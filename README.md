@@ -3,9 +3,13 @@
 
 An Android app for USC students to make reservations at recreation centers conveniently
 
+## Before Viewing!
+
+This is a public repository of USC RecApp project. To make it work, you have to have a Sendgid API Key and insert it into `USCRecApp_public\app\src\main\java\com\example\myapplication\DeleteAppointmentActivity.java` because Sendgrid does not allow public API Key.
+
 ## Preview
 
-<img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184426008.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184507432.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184550417.png" width="140" height="300" />
+<img src="https://github.com/ThmsLiang/USCRecApp_public/blob/main/screenshots/image-20220427184426008.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp_public/blob/main/screenshots/image-20220427184507432.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp_public/blob/main/screenshots/image-20220427184550417.png" width="140" height="300" />
 
 ## Release News and Changes Since Project 2.4 !!!!
 
