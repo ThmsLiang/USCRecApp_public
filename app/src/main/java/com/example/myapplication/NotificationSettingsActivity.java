@@ -7,6 +7,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -78,9 +79,13 @@ public class NotificationSettingsActivity extends AppCompatActivity {
 
         deleteButton.setOnClickListener((View view) -> {
             for (int i = requestCode; i >= 0; i--) {
-                Intent intent = new Intent(view.getContext(),AlarmReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(view.getContext(),i,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                alarmManager.cancel(pendingIntent);
+                Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+                intent.setData(Uri.parse("custom://" + requestCode));
+                intent.setAction(String.valueOf(requestCode));
+                PendingIntent broadcast = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_MUTABLE);
+              MainActivity.alarmManager.cancel(broadcast);
+              broadcast.cancel();
+                Log.d("Alarm Deleted","Deleted alarm: " + requestCode);
             }
 
             Toast.makeText(view.getContext(),"Notifications Deleted",Toast.LENGTH_SHORT).show();
@@ -122,10 +127,11 @@ public class NotificationSettingsActivity extends AppCompatActivity {
                             }
 
                             for (int i = 0; i < apptArray.size(); i++) {
-                                Intent intent = new Intent(view.getContext(),AlarmReceiver.class);
 
-
-                                PendingIntent broadcast = PendingIntent.getBroadcast(view.getContext(),requestCode,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+                                Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+                                intent.setData(Uri.parse("custom://" + requestCode));
+                                intent.setAction(String.valueOf(requestCode));
+                                PendingIntent broadcast = PendingIntent.getBroadcast(getApplicationContext(),0,intent, PendingIntent.FLAG_MUTABLE);
 
                                 MainActivity.alarmManager.set(AlarmManager.RTC_WAKEUP,timestamps.get(i).toDate().getTime() - millis, broadcast);
                             }
