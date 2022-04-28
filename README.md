@@ -3,6 +3,10 @@
 
 An Android app for USC students to make reservations at recreation centers conveniently
 
+## Preview
+
+<img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184426008.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184507432.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184550417.png" width="140" height="300" />
+
 ## Release News
 
 The "locate me" functionality only works on a local device. If you click on the button on an emulator, it will always lead you to Google's head quarter instead of your location.
