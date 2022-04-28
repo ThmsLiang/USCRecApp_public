@@ -7,9 +7,22 @@ An Android app for USC students to make reservations at recreation centers conve
 
 <img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184426008.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184507432.png" width="140" height="300" /><img src="https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184550417.png" width="140" height="300" />
 
-## Release News
+## Release News and Changes Since Project 2.4 !!!!
 
-The "locate me" functionality only works on a local device. If you click on the button on an emulator, it will always lead you to Google's head quarter instead of your location.
+We now have a new feature, the use will be notified through a system notification for their upcoming appointments. (Not the email notification for the users in the waiting list, which has been implemented in Project 2.4.)
+The user can navigate to notification settings through the gear button on the Google map page, and they are able modify how long before the appointment they receive a notification. And they will be notified according to the time they set.
+
+We also made great UI changes to the timeslot detail page. Now the page fits the overall theme of the app and show our trojan pride. This page is now prettier, more usable, and more user-friendly.
+
+We also constructed this detailed in-depth readme file in this sprint, not only to make this project looks more professional, but also to get users started with our product.
+
+More timeslots were added to each of the recreation centers. And since we are using firebase cloud database, updating the timeslot information is very easy through the firebase console. This guarantees the usability and ease of maintenance of our app.
+
+By clicking on compass button on the Google map page, the app now will lead the user to their location.
+
+At last, we now use Tommy Trojan for the app icon!
+
+Note: The "locate me" functionality only works on a local device. If you click on the button on an emulator, it will always lead you to Google's head quarter instead of your location.
 
 ## Description
 
