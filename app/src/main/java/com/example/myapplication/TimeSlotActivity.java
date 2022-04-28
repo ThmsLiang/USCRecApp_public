@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ public class TimeSlotActivity extends AppCompatActivity {
     public static int requestCode;
     public static ArrayList<Date> myDates = new ArrayList<>();
     public static long timeBeforeAppointment = 1000 * 60 * 30; //30 min before appt by default
+    public static PendingIntent pendingIntent;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -134,10 +136,6 @@ public class TimeSlotActivity extends AppCompatActivity {
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.reminderSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
                         dataUpdate = true;
-                        Date myDate = currTimeSlot.getDate();
-                        myDates.add(myDate);
-                        Date appointmentDate = new Date(myDate.getTime() - timeBeforeAppointment);
-                        createNotification(appointmentDate);
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -173,15 +171,20 @@ public class TimeSlotActivity extends AppCompatActivity {
                 userRef.update("Appointments", FieldValue.arrayUnion(appointment)).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
+                        Log.d("Appointment Debug","Appointment Success");
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentSucceed, Snackbar.LENGTH_SHORT);
                         success.show();
                         dataUpdate = true;
-
+                        Date myDate = currTimeSlot.getDate();
+                        myDates.add(myDate);
+                        Date appointmentDate = new Date(myDate.getTime() - timeBeforeAppointment);
+                        createNotification(appointmentDate);
 
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        Log.d("Appointment Debug","failed to add appointment",e);
                         Snackbar success = Snackbar.make(findViewById(R.id.timeSlotDetailView), R.string.appointmentFailed, Snackbar.LENGTH_SHORT);
                         success.show();
                     }
@@ -238,13 +241,20 @@ public class TimeSlotActivity extends AppCompatActivity {
     }
 
     public void createNotification(Date notifyTime) {
-        Intent intent = new Intent(this,AlarmReceiver.class);
+        Log.d("Debugging notifications:","entered createNotification");
+        Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+        intent.setData(Uri.parse("custom://" + requestCode));
+        intent.setAction(String.valueOf(requestCode));
 
 
-        PendingIntent broadcast = PendingIntent.getBroadcast(this,requestCode,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
-        MainActivity.alarmManager.set(AlarmManager.RTC_WAKEUP,notifyTime.getTime(), broadcast);
+        PendingIntent broadcast = PendingIntent.getBroadcast(getApplicationContext(),0,intent,PendingIntent.FLAG_MUTABLE);
+        pendingIntent = broadcast;
+        MainActivity.alarmManager.setExact(AlarmManager.RTC_WAKEUP,notifyTime.getTime(), broadcast);
         requestCode++;
 
+        Log.d("Notification set:",notifyTime.toString());
+        Log.d("Notification set:","Used requestCode: " + requestCode);
+
     }
+
 }
