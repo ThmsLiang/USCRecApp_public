@@ -5,11 +5,11 @@ An Android app for USC students to make reservations at recreation centers conve
 
 ## Preview
 
-<img src="C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20220427184426008.png" alt="image-20220427184426008" style="zoom:25%;" />
 
-<img src="C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20220427184507432.png" alt="image-20220427184507432" style="zoom:25%;" />
 
-<img src="C:\Users\lenovo\AppData\Roaming\Typora\typora-user-images\image-20220427184550417.png" alt="image-20220427184550417" style="zoom:25%;" />
+
+
+
 
 
 
