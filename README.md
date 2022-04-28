@@ -5,9 +5,11 @@ An Android app for USC students to make reservations at recreation centers conve
 
 ## Preview
 
-![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184426008.png?raw=true =100x20)
-![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184507432.png?raw=true =100x20)
-![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184550417.png?raw=true =100x20)
+![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184426008.png =100x20)
+
+![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184507432.png =100x20)
+
+![alt text](https://github.com/ThmsLiang/USCRecApp/blob/main/screenshots/image-20220427184550417.png =100x20)
 
 ## Release News
 
