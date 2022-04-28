@@ -21,7 +21,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                 .setContentTitle("Appointment Reminder")
                 .setContentText("This is a reminder for your upcoming appointment")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
