@@ -17,7 +17,7 @@
             android:icon="@drawable/tommy_trojan"
             android:text="View your appointment"
             android:padding="10dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="70dp"
             android:paddingEnd="10dp"
             android:onClick="toSummary"/>
 
