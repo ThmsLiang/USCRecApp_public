@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/RecCenterName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="14dp"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/dateSum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/RecCenterName"
+        android:paddingLeft="14dp"
+        android:textSize="17dp" />
+
+    <TextView
+        android:id="@+id/timeSum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dateSum"
+        android:paddingLeft="14dp"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/prevOrCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeSum"
+        android:paddingLeft="14dp"
+        android:textSize="14dp" />
+</RelativeLayout>

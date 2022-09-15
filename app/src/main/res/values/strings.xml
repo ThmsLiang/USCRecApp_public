@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">USCRecApp</string>
+    <string name="bookingPage">Make a Reservation</string>
+    <string name="bookingPageReserveButton">Reserve</string>
+    <string name="bookingPageRemindMeButton">Remind Me</string>
+    <string name="login_title">USCRecApp Login</string>
+    <string name="signup_title">USCRecApp Signup</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="title_activity_gmaps">GMapsActivity</string>
+    <string name="appointmentSucceed">Successfully reserved!</string>
+    <string name="appointmentFailed">Something went wrong with the reservation ...</string>
+    <string name="reminderSucceed">We will remind you when additional spots open!</string>
+    <string name="reminderFailed">Something went wrong with the reminder ...</string>
+    <string name="channel_name">Alarm Channel</string>
+    <string name="channel_description">This channel is used for creating alarm notifications.</string>
+    <string name="toastForLoginFailure">Login failed - please check credentials and try again.</string>
+    <string name="duplicateWarning">Sorry, but you already have one reservation / reminder from the current recreation center</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="timeHint">HH:mm:ss</string>
+</resources>
